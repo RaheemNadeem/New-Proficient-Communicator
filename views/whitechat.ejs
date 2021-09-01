@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+	<script src="https://cdn.socket.io/3.1.3/socket.io.min.js"></script>
+  
+    <title>Proficient Communicator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+    	body{margin-top:20px;}
+
+.chat-online {
+    color: #34ce57
+}
+
+.chat-offline {
+    color: #e4606d
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    max-height: 800px;
+    overflow-y: scroll
+}
+
+.chat-message-left,
+.chat-message-right {
+    display: flex;
+    flex-shrink: 0
+}
+
+.chat-message-left {
+    margin-right: auto
+}
+
+.chat-message-right {
+    flex-direction: row-reverse;
+    margin-left: auto
+}
+.py-3 {
+    padding-top: 1rem!important;
+    padding-bottom: 1rem!important;
+}
+.px-4 {
+    padding-right: 1.5rem!important;
+    padding-left: 1.5rem!important;
+}
+.flex-grow-0 {
+    flex-grow: 0!important;
+}
+.border-top {
+    border-top: 1px solid #dee2e6!important;
+}
+.display_none{
+
+	display:none;
+}
+    </style>
+</head>
+<body>
+<main class="content">
+    <div class="container p-0">
+
+		<h3 class=" text-center">Proficient Communicator    </h3><p>Logged in as <%=message%>   </p>
+
+		<div class="card">
+			<div class="row g-0">
+				<div class="col-12 col-lg-5 col-xl-3 border-right">
+
+					<div class="px-4 d-none d-md-block">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1">
+								
+									
+					  
+								  
+							</div>
+						</div>
+					</div>
+					<select id="country" name="filename1">
+						<option value="Dr Ayesha Ameen">Dr Ayesha Ameen</option>
+						<option value="Mr Feroz Amer">Mr Feroz Amer</option>
+						<option value="Mr Mir Mustafa Ali">Mr Mir Mustafa Ali</option>
+						<option value="Dr Mahbubul Haq Atif">Dr Mahbubul Haq Atif</option>
+						<option value="Mrs Tanveer Sultana">Mrs Tanveer Sultana</option>
+						<option value="Mrs Tahniyath Shaheen">Mrs Tahniyath Shaheen</option>
+						<option value="Ms Reshma Begum">Ms Reshma Begum</option>
+						<option value="Mr Mohd Salahuddin">Mr Mohd Salahuddin</option>
+					  
+					  </select>
+					  <button onclick="start()"> Start</button>
+					  <form action="/NoticeBoard" method="POST">
+						<input type="text" class="validate display_none" style="display: none;" name="username1" value="<%=message%>" required="" autocomplete="off" id="password">
+				
+						<button type="submit"> Notice Board</button>
+					  </form>
+
+					<div class="list-group-item list-group-item-action border-1" style="border-bottom-color: rgb(131, 131, 189);">
+						<div class="badge bg-success float-right"></div>
+						<div class="d-flex align-items-start">
+					
+							<div class="flex-grow-1 ml-3" onclick="clicked(event)">
+								groupchat
+								
+							</div>
+						</div>
+						
+					</div>
+					<div id ="inbox_parent">
+					
+					
+
+				</div>
+				
+				
+					
+
+			
+				</div>
+				<div class="col-12 col-lg-7 col-xl-9">
+					<div class="py-2 px-4 border-bottom d-none d-lg-block">
+						<div class="d-flex align-items-center py-1">
+							
+							<div class="flex-grow-1 pl-3">
+								<strong>Chatting with <span id="chatting_with">Group Chat</span></strong>
+								
+							</div>
+							
+						</div>
+					</div>
+
+					<div class="position-relative">
+						<div class="chat-messages p-4"  style="height: 400px;" id="parent">
+
+							
+						
+							
+
+						</div>
+					</div>
+
+					<div class="flex-grow-0 py-3 px-4 border-top">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Type your message"  id="input">
+							<button class="btn btn-primary msg_send_btn " onclick="sendMessage()" id="groupchat">Send</button>
+							<p id="username" style="display:none;"><%=message%></p>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	
+
+
+
+	var with_username= "groupchat";
+
+
+
+
+var Username = document.getElementById("username").innerText;
+var textarea = document.getElementById("input");
+
+textarea.addEventListener("keyup", function(event) {
+event.preventDefault();
+if (event.keyCode === 13) {
+	sendMessage();
+}
+});
+
+
+const socket = io('/');
+socket.on('connection');
+socket.emit('active_chats',Username);
+socket.on('active_chats',(y,username)=>{
+
+
+	if(username==Username)
+	{
+
+		document.getElementById("inbox_parent").innerHTML= y;
+
+	}
+
+});
+
+socket.on('reload',()=>{
+
+socket.emit('active_chats',Username);
+
+
+});
+socket.on('chats', (y) => {
+
+
+  document.getElementById("parent").innerHTML = y;
+  var s = document.getElementById('parent');
+  s.scrollTop = s.scrollHeight;
+
+
+
+});
+
+
+
+socket.on("message", (data, id,with_user) => {
+
+   
+var u = document.getElementsByClassName("msg_send_btn")[0].id;
+var l = document.createElement('div');
+
+
+/////////////first if////////////////
+
+if(id == Username || with_user == Username || with_user == "groupchat" ){
+
+
+
+if(id == Username || u == id){
+
+
+
+
+l.innerHTML = `    <div class="chat-message-left pb-4">
+								
+								<div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+								  <div class="font-weight-bold mb-1">`+id+`</div>
+								  `+data+`
+								</div>
+							  </div>
+						`;
+
+document.getElementById("parent").appendChild(l);
+var s = document.getElementById('parent');
+  s.scrollTop = s.scrollHeight;
+
+
+}
+if(with_user == "groupchat" && u =="groupchat")
+{
+
+l.innerHTML = `  <div class="chat-message-left pb-4">
+								
+								<div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+								  <div class="font-weight-bold mb-1">`+id+`</div>
+								  `+data+`
+								</div>
+							  </div>`;
+
+document.getElementById("parent").appendChild(l);
+var s = document.getElementById('parent');
+  s.scrollTop = s.scrollHeight;
+
+
+}}
+
+
+else{}
+
+
+
+
+
+});
+// const groupchat_sendMessage = () => {
+
+
+
+
+//   const User_text = document.getElementById("input").value;
+
+
+
+//   socket.emit("message", User_text, Username);
+
+// }
+
+
+
+
+
+const sendMessage = () => {
+
+var with_user = document.getElementsByClassName("msg_send_btn")[0].id;
+
+
+const User_text = document.getElementById("input").value;
+document.getElementById("input").value = "" ;
+
+
+
+socket.emit("message", User_text, Username,with_user);
+
+}
+
+
+
+
+const clicked = (event) =>{
+      var with_user = event.target.innerText;
+      var send_button = document.getElementsByClassName("msg_send_btn")[0].id;
+    
+      changing_button_id(with_user);
+
+       
+
+        socket.emit("chat_clicked", with_user, Username);
+
+
+    }
+
+const start = ()=>{
+
+  var with_user = document.getElementById("country").value;
+  socket.emit("chat_clicked",with_user,Username);
+}
+
+socket.on("chat_received",(user_name,with_user,y)=>{
+ 
+if(user_name == Username){
+
+document.getElementById("parent").innerHTML = y;
+var s = document.getElementById('parent');
+  s.scrollTop = s.scrollHeight;
+
+}
+else{
+
+}
+
+
+});
+
+const changing_button_id = (with_user) => {
+
+document.getElementsByClassName('msg_send_btn')[0].id = with_user;
+document.getElementById('chatting_with').innerText = with_user;
+
+}
+
+
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
