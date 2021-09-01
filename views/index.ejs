@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow"> 
+
+    <title>Proficient Communicator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" nonce="14a42d7c67004e3aa16a5411992" src="//local.adguard.org?ts=1617345623612&amp;type=content-script&amp;dmn=bootsnipp.com&amp;css=1&amp;js=1&amp;gcss=1&amp;rel=1&amp;rji=1"></script>
+<script type="text/javascript" nonce="14a42d7c67004e3aa16a5411992" src="//local.adguard.org?ts=1617345623612&amp;name=AdGuard%20Assistant%20Beta&amp;name=AdGuard%20Popup%20Blocker%20%28Beta%29&amp;name=AdGuard%20Extra%20Beta&amp;type=user-script"></script><script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link media="all" type="text/css" rel="stylesheet" href="https://bootsnipp.com/css/fullscreen.css">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+    <section class="section section-login" style="padding-top: 8rem;">
+        <div class="valign-wrapper row login-box">
+                <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+                  <form action="/Login" method="POST">
+                    <div class="card-content" style="padding-bottom: 1px;">
+                      <span class="card-title">Enter login details</span>
+                      <div class="row">
+                        <div class="input-field col s12">
+                          <label for="text">User ID</label>
+                          <input type="text" class="validate" name="urId" id="userid" required autocomplete="off"/>
+                        </div>
+                        <div class="input-field col s12">
+                          <label for="password">Password </label>
+                          <input type="password" class="validate" name="urPass" required autocomplete="off" id="password" />
+                        </div>
+                      </div>
+                    </div>
+                    <p class="center-align red-text"><%=message%></p>
+                    <div class="card-action center-align">
+                     
+                      <input type="submit" class="btn teal waves-effect waves-light" value="Login">
+                    </div>
+                  </form>
+                  
+                </div>
+              </div>
+  </section>
+    
+</body>
+</html>
